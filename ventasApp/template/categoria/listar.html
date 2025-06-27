@@ -1,0 +1,143 @@
+{% extends "plantilla.html" %}
+
+{% block title %}
+Listar Categorias
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="card card-outline card-info mt-3">
+        <div class="card-header d-flex align-items-center flex-wrap" style="gap: 10px;">
+            <h1 class="card-title mb-0 ">LISTADO DE CATEGORIAS</h1>
+            <a href="{% url 'agregarcategoria' %}" class="btn btn-success btn-sm d-flex align-items-center fw-bold shadow-sm px-3 py-2" style="gap: 8px;">
+                <i class="fas fa-plus me-2"></i> NUEVO
+            </a>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-6 pull-right">
+                    <form action="" method="GET">
+                        <div class="input-group">
+                            <input type="text" name="buscar" id="buscar" class="form-control" autofocus placeholder="Buscar por descripción ..." value="{{buscar}}">
+                            <span class="input-group-btn">
+                                <button class="btn btn-primary">
+                                    <i class="fa fa-search"></i>
+                                </button>
+                            </span>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div class="table-responsive">
+                <table id="tablasubfamilias" class="table table-striped mt-4" style="width:100%">
+                    <thead class="bg-info text-white">
+                        <tr>
+                            <th>CODIGO</th>
+                            <th>DESCRIPCION</th>
+                            <th><center>OPCIONES</center></th>
+                        </tr>
+                    </thead>
+                    {% if categoria %}
+                        {% for itemcategoria in categoria %}
+                            <tr>
+                                <td>{{ itemcategoria.idcategoria }}</td>
+                                <td>{{ itemcategoria.descripcion }}</td>
+                                <td style="text-align: center;">
+                                    <a href="{% url 'editarcategoria' itemcategoria.idcategoria %}" class="btn btn-info btn-sm">
+                                        <i class="fa fa-edit"></i> Editar
+                                    </a>
+                                    <a href="#"  onclick="eliminarCategoria(event,'{{itemcategoria.idcategoria}}','{{itemcategoria.descripcion}}')" class="btn btn-danger btn-sm">
+                                        <i class="fa fa-trash"></i> Eliminar
+                                    </a> 
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    {% else %}
+                        <tr style="text-align: center;">
+                            <td colspan="3">
+                                <p>No hay Registros</p>
+                            </td>
+                        </tr>
+                    {% endif %}
+                </table>
+
+                {% if categoria.has_other_pages %}
+                    <div class="d-flex justify-content-center mt-3">
+                        <nav>
+                            <ul class="pagination">
+                                {% if categoria.has_previous %}
+                                    <li class="page-item">
+                                        <a class="page-link" href="?page=1{% if buscar %}&buscar={{ buscar }}{% endif %}">Primero</a>
+                                    </li>
+                                    <li class="page-item">
+                                        <a class="page-link" href="?page={{ categoria.previous_page_number }}{% if buscar %}&buscar={{ buscar }}{% endif %}">Anterior</a>
+                                    </li>
+                                {% endif %}
+
+                                {% for num in categoria.paginator.page_range %}
+                                    {% if categoria.number == num %}
+                                        <li class="page-item active">
+                                            <a class="page-link">{{ num }}</a>
+                                        </li>
+                                    {% elif num > categoria.number|add:-3 and num < categoria.number|add:3 %}
+                                        <li class="page-item">
+                                            <a class="page-link" href="?page={{ num }}{% if buscar %}&buscar={{ buscar }}{% endif %}">{{ num }}</a>
+                                        </li>
+                                    {% endif %}
+                                {% endfor %}
+
+                                {% if categoria.has_next %}
+                                    <li class="page-item">
+                                        <a class="page-link" href="?page={{ categoria.next_page_number }}{% if buscar %}&buscar={{ buscar }}{% endif %}">Siguiente</a>
+                                    </li>
+                                    <li class="page-item">
+                                        <a class="page-link" href="?page={{ categoria.paginator.num_pages }}{% if buscar %}&buscar={{ buscar }}{% endif %}">Último</a>
+                                    </li>
+                                {% endif %}
+                            </ul>
+                        </nav>
+                    </div>
+                {% endif %}
+
+
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block js %}  
+    <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>  
+    {% if messages %}  
+        {% for m in messages %}  
+            <script>  
+            Swal.fire({  
+                "title": "¡Éxito!",  
+                "text":"{{m}}",  
+                "icon":"success"  
+            })  
+            </script>  
+        {% endfor %}  
+    {% endif %}  
+
+    <script>  
+        function eliminarCategoria(event, id, descripcion) {
+            event.preventDefault();
+
+            Swal.fire({
+                title: "¿Realmente desea eliminar el registro?",
+                text: "Código: " + id + " | Descripción: " + descripcion,
+                icon: "question",
+                showCancelButton: true,
+                cancelButtonText: "No",
+                confirmButtonText: "Sí",
+                reverseButtons: true,
+                confirmButtonColor: "#dc3545"
+            }).then(function(result) {
+                if (result.isConfirmed) {
+                    window.location.href = "/eliminarcategoria/" + id + "/";
+                }
+            });
+        }
+    </script>  
+{% endblock %}  
