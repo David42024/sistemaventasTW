@@ -1,0 +1,168 @@
+
+{% extends "plantilla.html" %}
+
+{% block title %}
+Agregar Venta
+{% endblock %}
+
+{% load static %}
+
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static '/assets/calendario/css/bootstrap-datepicker.standalone.css' %}">
+<link rel="stylesheet" href="{% static '/assets/select2/bootstrap-select.min.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1 class="mb-4">Registrar Venta</h1>
+    <form method="POST">
+        {% csrf_token %}
+
+        <!-- Fecha y Tipo -->
+        <div class="form-row align-items-end">
+            <div class="form-group col-md-3">
+                <label for="fecha">Fecha</label>
+                <div class="input-group date form_date" data-date-format="dd/mm/yyyy" data-provide="datepicker">
+                    <input type="text" class="form-control text-center" name="fecha" id="fecha"
+                           value="{{ fecha_actual }}">
+                    <div class="input-group-append">
+                        <button class="btn btn-primary date-set" type="button">
+                            <i class="fa fa-calendar"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group col-md-3">
+                <label for="seltipo">Tipo</label>
+                <select class="form-control selectpicker" id="seltipo" name="seltipo">
+                    <option value="">- Seleccione Tipo -</option>
+                    {% for t in tipos %}
+                        <option value="{{ t.idtipo }}">{{ t.descripcion }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="form-group col-md-3">
+                <label for="nrodoc">Nro. Documento</label>
+                <input type="text" class="form-control" name="nrodoc" id="nrodoc" readonly>
+            </div>
+        </div>
+
+        <!-- Cliente -->
+        <div class="form-row">
+            <div class="form-group col-md-6">
+                <label for="idcliente">Cliente</label>
+                <select class="form-control selectpicker" data-live-search="true" id="idcliente" name="idcliente">
+                    <option value="">- Seleccione Cliente -</option>
+                    {% for c in clientes %}
+                        <option value="{{ c.idcliente }}_{{ c.ruc_dni }}_{{ c.direccion }}">
+                            {{ c.apellidos }} {{ c.nombres }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="form-group col-md-3">
+                <label for="ruc">RUC/DNI</label>
+                <input type="text" class="form-control" name="ruc" id="ruc" readonly>
+            </div>
+
+            <div class="form-group col-md-3">
+                <label for="direccion">Dirección</label>
+                <input type="text" class="form-control" name="direccion" id="direccion" readonly>
+            </div>
+        </div>
+
+        <!-- Producto -->
+        <div class="form-row">
+            <div class="form-group col-md-6">
+                <label for="idproducto">Producto</label>
+                <select class="form-control selectpicker" data-live-search="true" id="idproducto" name="idproducto">
+                    <option value="">- Seleccione Producto -</option>
+                    {% for p in productos %}
+                        <option value="{{ p.idproducto }}">{{ p.descripcion }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="form-group col-md-2">
+                <label for="unidad">Unidad</label>
+                <input type="text" class="form-control" name="unidad" id="unidad" readonly>
+            </div>
+
+            <div class="form-group col-md-2">
+                <label for="precio">Precio</label>
+                <input type="text" class="form-control" name="precio" id="precio" readonly>
+            </div>
+
+            <div class="form-group col-md-2">
+                <label for="cantidad">Cantidad</label>
+                <input type="text" class="form-control" name="cantidad" id="cantidad">
+            </div>
+        </div>
+
+        <!-- Botón agregar -->
+        <div class="form-row">
+            <div class="col-md-12 text-right mb-3">
+                <button type="button" id="btnadddet" class="btn btn-success btn-block">
+                    <i class="fas fa-shopping-cart"></i> Agregar al carrito
+                </button>
+            </div>
+        </div>
+
+        <input type="hidden" name="stock" id="stock">
+
+        <!-- Tabla detalle -->
+        <div class="table-responsive mb-3">
+            <table id="detalles" class="table table-bordered">
+                <thead class="bg-primary text-white">
+                    <tr>
+                        <th class="text-center">Opciones</th>
+                        <th class="text-center">Código</th>
+                        <th>Descripción</th>
+                        <th>Unidad</th>
+                        <th class="text-center">Cantidad</th>
+                        <th class="text-center">P. Venta</th>
+                        <th class="text-center">Importe</th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Total -->
+        <div class="form-row justify-content-end mb-4">
+            <div class="col-md-3">
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text font-weight-bold">Total S/.</span>
+                    </div>
+                    <input type="text" class="form-control text-right" name="total" id="total" readonly>
+                </div>
+            </div>
+        </div>
+
+        <!-- Botones -->
+        <div class="form-row">
+            <div class="col text-center">
+                <button class="btn btn-primary" type="submit">
+                    <i class="fas fa-save"></i> Registrar
+                </button>
+                <a href="{% url 'listarventa' %}" class="btn btn-danger">
+                    <i class="fas fa-ban"></i> Cancelar
+                </a>
+            </div>
+        </div>
+    </form>
+</div>
+{% endblock %}
+
+{% block js %}
+<script src="{% static '/assets/select2/bootstrap-select.min.js'%}"></script>
+<script src="{% static '/assets/calendario/js/bootstrap-datepicker.min.js'%}"></script>
+<script src="{% static '/assets/calendario/locales/bootstrap-datepicker.es.min.js'%}"></script>
+<script src="{% static '/js/createdoc.js'%}"></script>
+{% endblock %}

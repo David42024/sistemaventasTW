@@ -1,24 +1,27 @@
 from django import forms 
 from django.forms import fields 
-from .models import Categoria , Cliente, Producto, Unidad
-class CategoriaForm(forms.ModelForm):  
-    class Meta:   
-        model=Categoria         
-        fields=['descripcion','estado']  
+from .models import Categoria , Cliente, Producto, Unidad, CabeceraVenta
+class CategoriaForm(forms.ModelForm):
+    class Meta:
+        model = Categoria
+        fields = ['descripcion', 'estado']
 
 class ClienteForm(forms.ModelForm):
     class Meta:
-        model=Cliente
-        fields = ['nombres', 'apellidos', 'direccion', 'email', 'telefono', 'estado']
+        model = Cliente
+        fields = ['ruc_dni', 'nombres', 'direccion', 'email', 'estado']
 
 class ProductoForm(forms.ModelForm):
     class Meta:
-        model=Producto
-        fields = ['descripcion', 'categoria', 'precio', 'cantidad', 'unidad', 'estado']
+        model = Producto
+        fields = ['descripcion', 'categoria', 'precio', 'stock', 'unidad', 'estado']
 
 class UnidadForm(forms.ModelForm):
     class Meta:
-        model=Unidad
+        model = Unidad
         fields = ['descripcion', 'estado']
 
-        
+class VentaForm(forms.ModelForm):
+    class Meta:
+        model = CabeceraVenta
+        fields = ['fecha_venta', 'tipo', 'nrodoc', 'cliente']
