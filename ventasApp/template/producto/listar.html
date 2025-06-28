@@ -37,7 +37,7 @@ Listar Productos
                             <th>DESCRIPCION</th>
                             <th>CATEGORIA</th>
                             <th>PRECIO</th>
-                            <th>CANTIDAD</th>
+                            <th>STOCK</th>
                             <th>UNIDAD</th>
                             <th><center>OPCIONES</center></th>
                         </tr>
@@ -49,7 +49,7 @@ Listar Productos
                                 <td>{{ itemproducto.descripcion }}</td>
                                 <td>{{ itemproducto.categoria.descripcion }}</td>
                                 <td>{{ itemproducto.precio }}</td>
-                                <td>{{ itemproducto.cantidad }}</td>
+                                <td>{{ itemproducto.stock }}</td>
                                 <td>{{ itemproducto.unidad.descripcion }}</td>
                                 <td style="text-align: center;">
                                     <a href="{% url 'editarproducto' itemproducto.idproducto %}" class="btn btn-info btn-sm">
