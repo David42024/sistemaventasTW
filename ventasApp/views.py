@@ -242,55 +242,106 @@ def listarventa(request):
 def agregarventa(request):
     if request.method == "POST":
         try:
-            # Cliente
-            cliente_id = request.POST["cliente"].split("_")[0]
-            cliente = Cliente.objects.get(pk=cliente_id)
+            with transaction.atomic():
+                # VALIDACIONES INICIALES
+                if not request.POST.get("idcliente"):
+                    messages.error(request, "Debe seleccionar un cliente")
+                    return redirect("agregarventa")
+                
+                if not request.POST.get("seltipo"):
+                    messages.error(request, "Debe seleccionar un tipo de documento")
+                    return redirect("agregarventa")
+                
+                # Validar que hay productos
+                ids = request.POST.getlist("cod_producto[]")
+                if not ids:
+                    messages.error(request, "Debe agregar al menos un producto")
+                    return redirect("agregarventa")
 
-            # Cabecera
-            venta = CabeceraVenta()
-            venta.cliente = cliente
-            venta.nrodoc = request.POST["nrodoc"]
-            venta.tipo_id = request.POST["tipo"]
-            fecha_str = request.POST["fecha_venta"]
-            venta.fechaventa = parse_date("-".join(fecha_str.split("/")[::-1]))
-            venta.estado = True
+                # Cliente
+                idcliente_raw = request.POST["idcliente"]
+                cliente_id = idcliente_raw.split("_")[0]
+                cliente = Cliente.objects.get(pk=cliente_id)
 
-            if request.POST["tipo"] == "2":
-                venta.total = request.POST["total"]
-                venta.subtotal = 0
-                venta.igv = 0
-            else:
-                venta.total = 100
-                venta.subtotal = 0
-                venta.igv = 0
+                # Cabecera
+                venta = CabeceraVenta()
+                venta.cliente = cliente
+                venta.nrodoc = request.POST["nrodoc"]
+                idtipo= request.POST["seltipo"]
+                venta.tipo_id = idtipo
 
-            venta.save()
+                # Fecha
+                fecha_str = request.POST["fecha"]
+                venta.fecha_venta = parse_date("-".join(fecha_str.split("/")[::-1]))
+                venta.estado = True
 
-            # Detalles
-            ids = request.POST.getlist("cod_producto[]")
-            cantidades = request.POST.getlist("cantidad[]")
-            precios = request.POST.getlist("pventa[]")
+                total_raw = request.POST["total"]
+                total = float(total_raw.replace(",", ""))
 
-            for i in range(len(ids)):
-                detalle = DetalleVenta()
-                detalle.venta = venta
-                detalle.idproducto = ids[i]
-                detalle.cantidad = cantidades[i]
-                detalle.precio = precios[i]
-                detalle.save()
+                # Totales según tipo
+                if request.POST["seltipo"] == "2":
+                    venta.total = total
+                    venta.subtotal = 0
+                    venta.igv = 0
+                else:
+                    venta.total = total
+                    venta.subtotal = round(total / 1.18, 2)
+                    venta.igv = round(total - venta.subtotal, 2)
 
-                # Actualizar stock
-                Producto.objects.filter(pk=ids[i]).update(stock=F("stock") - cantidades[i])
+                venta.save()
 
-            # Podrías también actualizar numeración si quieres
+                # Detalles
+                #en las validaciones iniciales obtiene los productos
+                cantidades = request.POST.getlist("cantidad[]")
+                precios = request.POST.getlist("pventa[]")
 
-            messages.success(request, "Venta registrada correctamente.")
-            return redirect("listarventa")
+                if len(ids) != len(cantidades) or len(ids) != len(precios):
+                    raise Exception("Error en los datos de productos")
+
+                for i in range(len(ids)):
+                    try:
+                        idproducto = int(ids[i])
+                        cantidad = float(cantidades[i])
+                        precio = float(precios[i])
+
+                        producto = Producto.objects.get(pk=idproducto)
+                        if producto.stock < cantidad:
+                            raise Exception(f"Stock insuficiente para {producto.descripcion}")
+
+                        detalle = DetalleVenta()
+                        detalle.venta = venta
+                        detalle.producto = producto
+                        detalle.cantidad = cantidad
+                        detalle.precio = precio
+                        detalle.save()
+
+                        # Actualizar stock
+                        Producto.objects.filter(pk=idproducto).update(
+                            stock=F("stock") - cantidad
+                        )
+
+                    except ValueError:
+                        raise Exception(f"Datos inválidos en producto {i+1}")
+
+                # Actualizar número de serie y numeración
+
+                parametro = Parametro.objects.get(tipo_id=idtipo)
+                numeracion_actual = parametro.numeracion
+                
+                nuevo_numero = int(numeracion_actual) + 1
+                nueva_numeracion = f"{nuevo_numero:05d}"
+                
+                parametro.numeracion = nueva_numeracion
+                parametro.save()
+
+                # Mensaje éxito
+                messages.success(request, "Venta registrada correctamente.")
+                return redirect("listarventa")
+
         except Exception as e:
             transaction.set_rollback(True)
-            messages.error(request, "Ocurrió un error al registrar la venta.")
-            return redirect("agregarventa")
-
+            messages.error(request, f"Ocurrió un error al registrar la venta: {str(e)}")
+            return redirect("listarventa")
     else:
         clientes = Cliente.objects.filter(estado=1)
         productos = Producto.objects.filter(estado=1)
@@ -305,13 +356,22 @@ def agregarventa(request):
         }
         return render(request, "venta/agregar.html", context)
 
-
 def eliminarventa(request, id):   
-    venta = CabeceraVenta.objects.get(pk=id)     
-    venta.estado = False     
-    venta.save()       
-    messages.success(request, 'Venta eliminada correctamente.')
-    return redirect("listarventa")
+    try:
+        venta = CabeceraVenta.objects.get(pk=id)    
+
+        detalles = DetalleVenta.objects.filter(venta=venta)
+        for detalle in detalles:
+            Producto.objects.filter(pk=detalle.producto_id).update(
+                stock=F('stock') + detalle.cantidad
+            )
+        venta.estado = False     
+        venta.save()       
+        messages.success(request, 'Venta eliminada correctamente.')
+        return redirect("listarventa")
+    except Exception as e:
+        messages.error(request, f'Ocurrió un error: {str(e)}')
+        return redirect("listarventa")
 
 def ProductoCodigo(request, producto_id):
     producto = (
@@ -329,16 +389,24 @@ def ProductoCodigo(request, producto_id):
     return JsonResponse([{
         "idproducto": producto["idproducto"],
         "unidad": producto["unidad__descripcion"],
+        "descripcion": producto["descripcion"],
         "precio": producto["precio"],
         "stock": producto["stock"]
     }], safe=False)
 
-#Investigar q hace esto XD:
 
 def PorTipo(request, tipo_id):
     parametro = (
         Parametro.objects.filter(tipo__idtipo=tipo_id).values(
+            'tipo__idtipo',
+            'tipo__descripcion',
+            'serie',
             'numeracion'
         ).first()
     )
-    return JsonResponse([{"numeracion": parametro["numeracion"]}], safe=False)
+    return JsonResponse([{
+        "idtipo" : parametro["tipo__idtipo"],
+        "descripcion": parametro["tipo__descripcion"],
+        "serie": parametro["serie"],
+        "numeracion": parametro["numeracion"]
+    }], safe=False)

@@ -22,7 +22,8 @@ Listado de Ventas
             <div class="d-flex justify-content-end mb-3">
                 <form method="GET" class="form-inline">
                     <div class="input-group">
-                        <input type="text" name="buscar" id="buscar" class="form-control" placeholder="Buscar por descripción..." value="{{ buscar|default_if_none:'' }}">
+                        <input type="text" name="buscar" id="buscar" class="form-control" placeholder="Buscar por descripción..."
+                         value="{{ buscar|default_if_none:'' }}">
                         <button class="btn btn-outline-success" type="submit">
                             <i class="fas fa-search"></i> Buscar
                         </button>
@@ -55,7 +56,8 @@ Listado de Ventas
                                 <td>{{ itemventa.cliente.nombres }}</td>
                                 <td>{{ itemventa.total }}</td>
                                 <td class="text-center">
-                                    <a href="#" onclick="eliminarVenta(event,'{{ itemventa.idventa }}','{{ itemventa.tipo.descripcion }}','{{ itemventa.cliente.nombres }}')" class="btn btn-danger btn-sm">
+                                    <a href="#" onclick="eliminarVenta(event,'{{ itemventa.idventa }}','{{ itemventa.tipo.descripcion }}','{{ itemventa.cliente.nombres }}')" 
+                                    class="btn btn-danger btn-sm">
                                         <i class="fas fa-trash"></i> Eliminar
                                     </a>
                                 </td>
@@ -113,14 +115,15 @@ Listado de Ventas
 
 {% block js %}
 <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 {% if messages %}
     {% for m in messages %}
         <script>
         Swal.fire({
-            "title": "¡Éxito!",
+            "title": "{% if 'success' in m.tags %}¡Éxito!{% elif 'error' in m.tags %}¡Error!{% else %}Aviso{% endif %}",
             "text": "{{ m }}",
-            "icon": "success"
-        })
+            "icon": "{% if 'success' in m.tags %}success{% elif 'error' in m.tags %}error{% else %}info{% endif %}"
+        });
         </script>
     {% endfor %}
 {% endif %}

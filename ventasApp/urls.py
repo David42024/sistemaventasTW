@@ -7,7 +7,7 @@ from .views import listarventa, agregarventa, eliminarventa, ProductoCodigo, Por
 from django.urls import path
 
 urlpatterns = [
-#Categoria
+    #Categoria
 
     path('listacategoria/',listarcategoria,name="listarcategoria"), 
     path('agregarcategoria/',agregarcategoria ,name="agregarcategoria"),

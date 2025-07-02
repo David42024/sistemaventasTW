@@ -7,6 +7,8 @@ def actualizarNumero(tipo_id, numeracion2):
         return True
     except Exception:
         return False
+    
+
 
 def actualizarStock(idproducto, cantidadquitada):
     updated = (
@@ -15,3 +17,5 @@ def actualizarStock(idproducto, cantidadquitada):
         .update(cantidad=F('stock') - cantidadquitada)
     )
     return updated
+
+    

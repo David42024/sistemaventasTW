@@ -4,7 +4,7 @@ var detalleventa=[];
 var subtotal=[]; 
 var controlproducto=[];               
 $(document).ready(function(){     
-     
+    
     $('#idcliente').change(function(){ 
         mostrarCliente(); 
     }); 
@@ -17,6 +17,7 @@ $(document).ready(function(){
     $('#seltipo').change(function(){ 
         mostrarTipo(); 
     }); 
+
 });   
     function mostrarCliente(){                             
         datosCliente=document.getElementById('idcliente').value.split('_');
@@ -26,24 +27,20 @@ $(document).ready(function(){
     function mostrarProducto(){                             
           idproducto=$("#idproducto").val();              
               $.get('/EncontrarProducto/'+idproducto, function(data){      
-                    
                   $('input[name=idproducto]').val(data[0].idproducto);    
                   $('input[name=unidad]').val(data[0].unidad);     
                   $('input[name=precio]').val(data[0].precio);     
-                  $('input[name=stock]').val(data[0].stock);   
+                  $('input[name=stock]').val(data[0].stock);  
+                  $('input[name=cantidad]').val(0);   
                 }); 
+          
      }         
     function mostrarTipo(){                             
         idtipo = $("#seltipo").val();    
-        console.log("Tipo seleccionado:", idtipo);  // ✅ Ver qué valor tiene
 
         $.get('/EncontrarTipo/' + idtipo, function(data){
-            console.log("Respuesta AJAX:", data);   // ✅ Ver qué viene del servidor
             $('input[name=nrodoc]').val(data[0].numeracion);
         })
-        .fail(function(jqXHR, textStatus, errorThrown) {
-            console.error("Error AJAX:", textStatus, errorThrown); // ✅ Si falla la petición
-        });
     }
  
   
@@ -143,6 +140,7 @@ function agregarDetalle()
         cont++; 
     }     
     $('#total').val(number_format(total,2)); 
+    
 } 
  
 function limpiar(){ 
