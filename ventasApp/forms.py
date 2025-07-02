@@ -1,6 +1,6 @@
 from django import forms 
 from django.forms import fields 
-from .models import Categoria , Cliente, Producto, Unidad, CabeceraVenta
+from .models import Categoria , Cliente, Producto, Unidad, CabeceraVenta, DetalleVenta
 class CategoriaForm(forms.ModelForm):
     class Meta:
         model = Categoria
@@ -21,7 +21,3 @@ class UnidadForm(forms.ModelForm):
         model = Unidad
         fields = ['descripcion', 'estado']
 
-class VentaForm(forms.ModelForm):
-    class Meta:
-        model = CabeceraVenta
-        fields = ['fecha_venta', 'tipo', 'nrodoc', 'cliente']
