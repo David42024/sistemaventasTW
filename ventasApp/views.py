@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from ventasApp.models import Categoria , Cliente, Producto, Unidad, CabeceraVenta, Tipo, Parametro, DetalleVenta
 from django.utils.dateparse import parse_date
 from django.db.models import Q, F
@@ -243,19 +243,10 @@ def agregarventa(request):
     if request.method == "POST":
         try:
             with transaction.atomic():
-                # VALIDACIONES INICIALES
-                if not request.POST.get("idcliente"):
-                    messages.error(request, "Debe seleccionar un cliente")
-                    return redirect("agregarventa")
-                
-                if not request.POST.get("seltipo"):
-                    messages.error(request, "Debe seleccionar un tipo de documento")
-                    return redirect("agregarventa")
-                
                 # Validar que hay productos
                 ids = request.POST.getlist("cod_producto[]")
-                if not ids:
-                    messages.error(request, "Debe agregar al menos un producto")
+                if len(ids) == 0:
+                    messages.error(request, "Debe agregar al menos un producto al carrito.")
                     return redirect("agregarventa")
 
                 # Cliente
@@ -272,6 +263,8 @@ def agregarventa(request):
 
                 # Fecha
                 fecha_str = request.POST["fecha"]
+                if not fecha_str:
+                    fecha_str = date.today().strftime("%d/%m/%Y")
                 venta.fecha_venta = parse_date("-".join(fecha_str.split("/")[::-1]))
                 venta.estado = True
 
@@ -410,3 +403,13 @@ def PorTipo(request, tipo_id):
         "serie": parametro["serie"],
         "numeracion": parametro["numeracion"]
     }], safe=False)
+
+
+def detallesventa(request, id):
+    venta = CabeceraVenta.objects.get(pk=id)  
+    detalles = DetalleVenta.objects.select_related('producto').filter(venta=venta)
+    context = {
+        'venta': venta,
+        'detalles': detalles
+    }
+    return render(request, "venta/detalles.html", context)

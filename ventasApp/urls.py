@@ -2,7 +2,7 @@ from .views import listarcategoria, agregarcategoria, editarcategoria, eliminarc
 from .views import listarcliente, agregarcliente, editarcliente, eliminarcliente
 from .views import listarunidad, agregarunidad, editarunidad, eliminarunidad
 from .views import listarproducto, agregarproducto, editarproducto, eliminarproducto
-from .views import listarventa, agregarventa, eliminarventa, ProductoCodigo, PorTipo 
+from .views import listarventa, agregarventa, eliminarventa, ProductoCodigo, PorTipo, detallesventa
 
 from django.urls import path
 
@@ -45,6 +45,6 @@ urlpatterns = [
     path('EncontrarProducto/<int:producto_id>/', ProductoCodigo, name="EncontrarProducto"),
     path('EncontrarTipo/<int:tipo_id>/', PorTipo, name="EncontrarTipo"),
 
-
+    path('detallesventa/<int:id>/',detallesventa, name="detallesventa"),
 
 ]
