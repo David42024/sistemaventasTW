@@ -165,4 +165,18 @@ Agregar Venta
 <script src="{% static '/assets/calendario/js/bootstrap-datepicker.min.js'%}"></script>
 <script src="{% static '/assets/calendario/locales/bootstrap-datepicker.es.min.js'%}"></script>
 <script src="{% static '/js/createdoc.js'%}"></script>
+
+<script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+{% if messages %}
+    {% for m in messages %}
+        <script>
+        Swal.fire({
+            "title": "{% if 'success' in m.tags %}¡Éxito!{% elif 'error' in m.tags %}¡Error!{% else %}Aviso{% endif %}",
+            "text": "{{ m }}",
+            "icon": "{% if 'success' in m.tags %}success{% elif 'error' in m.tags %}error{% else %}info{% endif %}"
+        });
+        </script>
+    {% endfor %}
+{% endif %}
 {% endblock %}
