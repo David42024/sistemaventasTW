@@ -1,0 +1,1 @@
+web: gunicorn proyectoVentas.wsgi:application
