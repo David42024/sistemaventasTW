@@ -3,8 +3,8 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1:3306
--- Tiempo de generación: 28-06-2025 a las 04:48:56
--- Versión del servidor: 11.7.2-MariaDB
+-- Tiempo de generación: 04-07-2025 a las 12:27:24
+-- Versión del servidor: 9.1.0
 -- Versión de PHP: 8.3.14
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
@@ -29,11 +29,11 @@ SET time_zone = "+00:00";
 
 DROP TABLE IF EXISTS `auth_group`;
 CREATE TABLE IF NOT EXISTS `auth_group` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `id` int NOT NULL AUTO_INCREMENT,
   `name` varchar(150) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `name` (`name`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_uca1400_ai_ci;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- --------------------------------------------------------
 
@@ -43,13 +43,14 @@ CREATE TABLE IF NOT EXISTS `auth_group` (
 
 DROP TABLE IF EXISTS `auth_group_permissions`;
 CREATE TABLE IF NOT EXISTS `auth_group_permissions` (
-  `id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `group_id` int(11) NOT NULL,
-  `permission_id` int(11) NOT NULL,
+  `id` bigint NOT NULL AUTO_INCREMENT,
+  `group_id` int NOT NULL,
+  `permission_id` int NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `auth_group_permissions_group_id_permission_id_0cd325b0_uniq` (`group_id`,`permission_id`),
-  KEY `auth_group_permissio_permission_id_84c5c92e_fk_auth_perm` (`permission_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_uca1400_ai_ci;
+  KEY `auth_group_permissions_group_id_b120cbf9` (`group_id`),
+  KEY `auth_group_permissions_permission_id_84c5c92e` (`permission_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- --------------------------------------------------------
 
@@ -59,13 +60,14 @@ CREATE TABLE IF NOT EXISTS `auth_group_permissions` (
 
 DROP TABLE IF EXISTS `auth_permission`;
 CREATE TABLE IF NOT EXISTS `auth_permission` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `id` int NOT NULL AUTO_INCREMENT,
   `name` varchar(255) NOT NULL,
-  `content_type_id` int(11) NOT NULL,
+  `content_type_id` int NOT NULL,
   `codename` varchar(100) NOT NULL,
   PRIMARY KEY (`id`),
-  UNIQUE KEY `auth_permission_content_type_id_codename_01ab375a_uniq` (`content_type_id`,`codename`)
-) ENGINE=InnoDB AUTO_INCREMENT=57 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_uca1400_ai_ci;
+  UNIQUE KEY `auth_permission_content_type_id_codename_01ab375a_uniq` (`content_type_id`,`codename`),
+  KEY `auth_permission_content_type_id_2f476e4b` (`content_type_id`)
+) ENGINE=MyISAM AUTO_INCREMENT=57 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Volcado de datos para la tabla `auth_permission`
@@ -137,7 +139,7 @@ INSERT INTO `auth_permission` (`id`, `name`, `content_type_id`, `codename`) VALU
 
 DROP TABLE IF EXISTS `auth_user`;
 CREATE TABLE IF NOT EXISTS `auth_user` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `id` int NOT NULL AUTO_INCREMENT,
   `password` varchar(128) NOT NULL,
   `last_login` datetime(6) DEFAULT NULL,
   `is_superuser` tinyint(1) NOT NULL,
@@ -150,15 +152,14 @@ CREATE TABLE IF NOT EXISTS `auth_user` (
   `date_joined` datetime(6) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `username` (`username`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_uca1400_ai_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Volcado de datos para la tabla `auth_user`
 --
 
 INSERT INTO `auth_user` (`id`, `password`, `last_login`, `is_superuser`, `username`, `first_name`, `last_name`, `email`, `is_staff`, `is_active`, `date_joined`) VALUES
-(1, 'pbkdf2_sha256$1000000$zbw1xdcTd9CdKi0hgapPzJ$w4Lh/Jnc/9LSeBacMwXCJdf9jK524Y9qC041SWjzlAc=', '2025-06-28 02:04:46.490505', 1, 'lucano', '', '', '', 1, 1, '2025-06-28 02:04:37.210677'),
-(2, 'pbkdf2_sha256$1000000$YC10US3E9JPKApz7JuU2oJ$bhB2tDp6PUZ32XWQ3PlrAf5r4QOkmrjsV+GshKl66v0=', '2025-06-28 04:43:30.093106', 0, 'admin', '', '', '', 0, 1, '2025-06-28 02:05:00.592746');
+(1, 'pbkdf2_sha256$1000000$PBauYu8j6EtMwvCQo35Ueo$blSUNQdI+YMU2bV2zFf7bOQN2A7zIhm0jfku1rohrgo=', '2025-07-04 12:25:14.182709', 1, 'esteff', '', '', '', 1, 1, '2025-06-29 02:53:10.639579');
 
 -- --------------------------------------------------------
 
@@ -168,13 +169,14 @@ INSERT INTO `auth_user` (`id`, `password`, `last_login`, `is_superuser`, `userna
 
 DROP TABLE IF EXISTS `auth_user_groups`;
 CREATE TABLE IF NOT EXISTS `auth_user_groups` (
-  `id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `user_id` int(11) NOT NULL,
-  `group_id` int(11) NOT NULL,
+  `id` bigint NOT NULL AUTO_INCREMENT,
+  `user_id` int NOT NULL,
+  `group_id` int NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `auth_user_groups_user_id_group_id_94350c0c_uniq` (`user_id`,`group_id`),
-  KEY `auth_user_groups_group_id_97559544_fk_auth_group_id` (`group_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_uca1400_ai_ci;
+  KEY `auth_user_groups_user_id_6a12ed8b` (`user_id`),
+  KEY `auth_user_groups_group_id_97559544` (`group_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- --------------------------------------------------------
 
@@ -184,13 +186,14 @@ CREATE TABLE IF NOT EXISTS `auth_user_groups` (
 
 DROP TABLE IF EXISTS `auth_user_user_permissions`;
 CREATE TABLE IF NOT EXISTS `auth_user_user_permissions` (
-  `id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `user_id` int(11) NOT NULL,
-  `permission_id` int(11) NOT NULL,
+  `id` bigint NOT NULL AUTO_INCREMENT,
+  `user_id` int NOT NULL,
+  `permission_id` int NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `auth_user_user_permissions_user_id_permission_id_14a6b632_uniq` (`user_id`,`permission_id`),
-  KEY `auth_user_user_permi_permission_id_1fbb5f2c_fk_auth_perm` (`permission_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_uca1400_ai_ci;
+  KEY `auth_user_user_permissions_user_id_a95ead1b` (`user_id`),
+  KEY `auth_user_user_permissions_permission_id_1fbb5f2c` (`permission_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- --------------------------------------------------------
 
@@ -200,19 +203,32 @@ CREATE TABLE IF NOT EXISTS `auth_user_user_permissions` (
 
 DROP TABLE IF EXISTS `cabeceraventas`;
 CREATE TABLE IF NOT EXISTS `cabeceraventas` (
-  `idventa` int(11) NOT NULL AUTO_INCREMENT,
+  `idventa` int NOT NULL AUTO_INCREMENT,
   `fecha_venta` date NOT NULL,
   `total` double NOT NULL,
   `subtotal` double NOT NULL,
   `igv` double NOT NULL,
   `nrodoc` varchar(12) NOT NULL,
   `estado` tinyint(1) NOT NULL,
-  `idcliente` int(11) NOT NULL,
-  `idtipo` int(11) NOT NULL,
+  `idcliente` int NOT NULL,
+  `idtipo` int NOT NULL,
   PRIMARY KEY (`idventa`),
-  KEY `cabeceraventas_idcliente_99e367c5_fk_clientes_idcliente` (`idcliente`),
-  KEY `cabeceraventas_idtipo_5e390c8b_fk_tipos_idtipo` (`idtipo`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_uca1400_ai_ci;
+  KEY `cabeceraventas_idcliente_99e367c5` (`idcliente`),
+  KEY `cabeceraventas_idtipo_5e390c8b` (`idtipo`)
+) ENGINE=MyISAM AUTO_INCREMENT=12 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Volcado de datos para la tabla `cabeceraventas`
+--
+
+INSERT INTO `cabeceraventas` (`idventa`, `fecha_venta`, `total`, `subtotal`, `igv`, `nrodoc`, `estado`, `idcliente`, `idtipo`) VALUES
+(5, '2025-06-30', 1200, 1016.95, 183.05, '00010', 0, 1, 1),
+(6, '2025-06-30', 55.9, 0, 0, '01000', 1, 2, 2),
+(7, '2025-06-30', 31, 0, 0, '01000', 1, 3, 2),
+(8, '2025-07-02', 3, 2.54, 0.46, '00010', 1, 2, 1),
+(9, '2025-07-02', 1.5, 0, 0, '01001', 1, 2, 2),
+(10, '2025-07-02', 1.5, 0, 0, '01002', 1, 1, 2),
+(11, '2025-07-02', 10, 0, 0, '01003', 1, 2, 2);
 
 -- --------------------------------------------------------
 
@@ -222,12 +238,12 @@ CREATE TABLE IF NOT EXISTS `cabeceraventas` (
 
 DROP TABLE IF EXISTS `categorias`;
 CREATE TABLE IF NOT EXISTS `categorias` (
-  `idcategoria` int(11) NOT NULL AUTO_INCREMENT,
+  `idcategoria` int NOT NULL AUTO_INCREMENT,
   `descripcion` varchar(30) NOT NULL,
   `estado` tinyint(1) NOT NULL,
   PRIMARY KEY (`idcategoria`),
   UNIQUE KEY `descripcion` (`descripcion`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_uca1400_ai_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Volcado de datos para la tabla `categorias`
@@ -247,7 +263,7 @@ INSERT INTO `categorias` (`idcategoria`, `descripcion`, `estado`) VALUES
 
 DROP TABLE IF EXISTS `clientes`;
 CREATE TABLE IF NOT EXISTS `clientes` (
-  `idcliente` int(11) NOT NULL AUTO_INCREMENT,
+  `idcliente` int NOT NULL AUTO_INCREMENT,
   `ruc_dni` varchar(11) NOT NULL,
   `nombres` varchar(80) NOT NULL,
   `direccion` varchar(100) NOT NULL,
@@ -255,7 +271,7 @@ CREATE TABLE IF NOT EXISTS `clientes` (
   `estado` tinyint(1) NOT NULL,
   PRIMARY KEY (`idcliente`),
   UNIQUE KEY `ruc_dni` (`ruc_dni`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_uca1400_ai_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Volcado de datos para la tabla `clientes`
@@ -276,11 +292,26 @@ DROP TABLE IF EXISTS `detalleventas`;
 CREATE TABLE IF NOT EXISTS `detalleventas` (
   `precio` double NOT NULL,
   `cantidad` double NOT NULL,
-  `idventa` int(11) NOT NULL,
-  `idproducto` int(11) NOT NULL,
+  `idventa` int NOT NULL,
+  `idproducto` int NOT NULL,
   PRIMARY KEY (`idproducto`,`idventa`),
-  KEY `detalleventas_idventa_058d84b5_fk_cabeceraventas_idventa` (`idventa`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_uca1400_ai_ci;
+  KEY `detalleventas_idventa_058d84b5` (`idventa`),
+  KEY `detalleventas_idproducto_4664e227` (`idproducto`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Volcado de datos para la tabla `detalleventas`
+--
+
+INSERT INTO `detalleventas` (`precio`, `cantidad`, `idventa`, `idproducto`) VALUES
+(1200, 1, 5, 1),
+(45.9, 1, 6, 4),
+(5, 2, 6, 3),
+(15.5, 2, 7, 2),
+(1.5, 2, 8, 5),
+(1.5, 1, 9, 5),
+(1.5, 1, 10, 5),
+(5, 2, 11, 3);
 
 -- --------------------------------------------------------
 
@@ -290,25 +321,18 @@ CREATE TABLE IF NOT EXISTS `detalleventas` (
 
 DROP TABLE IF EXISTS `django_admin_log`;
 CREATE TABLE IF NOT EXISTS `django_admin_log` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `id` int NOT NULL AUTO_INCREMENT,
   `action_time` datetime(6) NOT NULL,
-  `object_id` longtext DEFAULT NULL,
+  `object_id` longtext,
   `object_repr` varchar(200) NOT NULL,
-  `action_flag` smallint(5) UNSIGNED NOT NULL CHECK (`action_flag` >= 0),
+  `action_flag` smallint UNSIGNED NOT NULL,
   `change_message` longtext NOT NULL,
-  `content_type_id` int(11) DEFAULT NULL,
-  `user_id` int(11) NOT NULL,
+  `content_type_id` int DEFAULT NULL,
+  `user_id` int NOT NULL,
   PRIMARY KEY (`id`),
-  KEY `django_admin_log_content_type_id_c4bce8eb_fk_django_co` (`content_type_id`),
-  KEY `django_admin_log_user_id_c564eba6_fk_auth_user_id` (`user_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_uca1400_ai_ci;
-
---
--- Volcado de datos para la tabla `django_admin_log`
---
-
-INSERT INTO `django_admin_log` (`id`, `action_time`, `object_id`, `object_repr`, `action_flag`, `change_message`, `content_type_id`, `user_id`) VALUES
-(1, '2025-06-28 02:05:01.653394', '2', 'admin', 1, '[{\"added\": {}}]', 4, 1);
+  KEY `django_admin_log_content_type_id_c4bce8eb` (`content_type_id`),
+  KEY `django_admin_log_user_id_c564eba6` (`user_id`)
+) ;
 
 -- --------------------------------------------------------
 
@@ -318,12 +342,12 @@ INSERT INTO `django_admin_log` (`id`, `action_time`, `object_id`, `object_repr`,
 
 DROP TABLE IF EXISTS `django_content_type`;
 CREATE TABLE IF NOT EXISTS `django_content_type` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `id` int NOT NULL AUTO_INCREMENT,
   `app_label` varchar(100) NOT NULL,
   `model` varchar(100) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `django_content_type_app_label_model_76bd3d3b_uniq` (`app_label`,`model`)
-) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_uca1400_ai_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=15 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Volcado de datos para la tabla `django_content_type`
@@ -331,19 +355,19 @@ CREATE TABLE IF NOT EXISTS `django_content_type` (
 
 INSERT INTO `django_content_type` (`id`, `app_label`, `model`) VALUES
 (1, 'admin', 'logentry'),
-(3, 'auth', 'group'),
 (2, 'auth', 'permission'),
+(3, 'auth', 'group'),
 (4, 'auth', 'user'),
 (5, 'contenttypes', 'contenttype'),
 (6, 'sessions', 'session'),
-(11, 'ventasApp', 'cabeceraventa'),
 (7, 'ventasApp', 'categoria'),
 (8, 'ventasApp', 'cliente'),
-(14, 'ventasApp', 'detalleventa'),
+(9, 'ventasApp', 'tipo'),
+(10, 'ventasApp', 'unidad'),
+(11, 'ventasApp', 'cabeceraventa'),
 (12, 'ventasApp', 'parametro'),
 (13, 'ventasApp', 'producto'),
-(9, 'ventasApp', 'tipo'),
-(10, 'ventasApp', 'unidad');
+(14, 'ventasApp', 'detalleventa');
 
 -- --------------------------------------------------------
 
@@ -353,38 +377,37 @@ INSERT INTO `django_content_type` (`id`, `app_label`, `model`) VALUES
 
 DROP TABLE IF EXISTS `django_migrations`;
 CREATE TABLE IF NOT EXISTS `django_migrations` (
-  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `id` bigint NOT NULL AUTO_INCREMENT,
   `app` varchar(255) NOT NULL,
   `name` varchar(255) NOT NULL,
   `applied` datetime(6) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=21 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_uca1400_ai_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=20 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Volcado de datos para la tabla `django_migrations`
 --
 
 INSERT INTO `django_migrations` (`id`, `app`, `name`, `applied`) VALUES
-(1, 'contenttypes', '0001_initial', '2025-06-28 02:02:44.452001'),
-(2, 'auth', '0001_initial', '2025-06-28 02:02:44.601194'),
-(3, 'admin', '0001_initial', '2025-06-28 02:02:44.640127'),
-(4, 'admin', '0002_logentry_remove_auto_add', '2025-06-28 02:02:44.659207'),
-(5, 'admin', '0003_logentry_add_action_flag_choices', '2025-06-28 02:02:44.673560'),
-(6, 'contenttypes', '0002_remove_content_type_name', '2025-06-28 02:02:44.724210'),
-(7, 'auth', '0002_alter_permission_name_max_length', '2025-06-28 02:02:44.760455'),
-(8, 'auth', '0003_alter_user_email_max_length', '2025-06-28 02:02:44.784919'),
-(9, 'auth', '0004_alter_user_username_opts', '2025-06-28 02:02:44.806634'),
-(10, 'auth', '0005_alter_user_last_login_null', '2025-06-28 02:02:44.834821'),
-(11, 'auth', '0006_require_contenttypes_0002', '2025-06-28 02:02:44.837244'),
-(12, 'auth', '0007_alter_validators_add_error_messages', '2025-06-28 02:02:44.847674'),
-(13, 'auth', '0008_alter_user_username_max_length', '2025-06-28 02:02:44.871348'),
-(14, 'auth', '0009_alter_user_last_name_max_length', '2025-06-28 02:02:44.885405'),
-(15, 'auth', '0010_alter_group_name_max_length', '2025-06-28 02:02:44.901886'),
-(16, 'auth', '0011_update_proxy_permissions', '2025-06-28 02:02:44.912309'),
-(17, 'auth', '0012_alter_user_first_name_max_length', '2025-06-28 02:02:44.929321'),
-(18, 'sessions', '0001_initial', '2025-06-28 02:02:44.947176'),
-(19, 'ventasApp', '0001_initial', '2025-06-28 02:02:45.088224'),
-(20, 'ventasApp', '0002_rename_cantidad_producto_stock', '2025-06-28 03:31:48.427912');
+(1, 'contenttypes', '0001_initial', '2025-06-29 02:44:44.479941'),
+(2, 'auth', '0001_initial', '2025-06-29 02:44:45.151955'),
+(3, 'admin', '0001_initial', '2025-06-29 02:44:45.402566'),
+(4, 'admin', '0002_logentry_remove_auto_add', '2025-06-29 02:44:45.410882'),
+(5, 'admin', '0003_logentry_add_action_flag_choices', '2025-06-29 02:44:45.420867'),
+(6, 'contenttypes', '0002_remove_content_type_name', '2025-06-29 02:44:45.490869'),
+(7, 'auth', '0002_alter_permission_name_max_length', '2025-06-29 02:44:45.524828'),
+(8, 'auth', '0003_alter_user_email_max_length', '2025-06-29 02:44:45.560684'),
+(9, 'auth', '0004_alter_user_username_opts', '2025-06-29 02:44:45.567703'),
+(10, 'auth', '0005_alter_user_last_login_null', '2025-06-29 02:44:45.600486'),
+(11, 'auth', '0006_require_contenttypes_0002', '2025-06-29 02:44:45.601897'),
+(12, 'auth', '0007_alter_validators_add_error_messages', '2025-06-29 02:44:45.609733'),
+(13, 'auth', '0008_alter_user_username_max_length', '2025-06-29 02:44:45.645620'),
+(14, 'auth', '0009_alter_user_last_name_max_length', '2025-06-29 02:44:45.677338'),
+(15, 'auth', '0010_alter_group_name_max_length', '2025-06-29 02:44:45.710496'),
+(16, 'auth', '0011_update_proxy_permissions', '2025-06-29 02:44:45.718298'),
+(17, 'auth', '0012_alter_user_first_name_max_length', '2025-06-29 02:44:45.751802'),
+(18, 'sessions', '0001_initial', '2025-06-29 02:44:45.790537'),
+(19, 'ventasApp', '0001_initial', '2025-06-29 02:44:46.205839');
 
 -- --------------------------------------------------------
 
@@ -399,14 +422,14 @@ CREATE TABLE IF NOT EXISTS `django_session` (
   `expire_date` datetime(6) NOT NULL,
   PRIMARY KEY (`session_key`),
   KEY `django_session_expire_date_a5c62663` (`expire_date`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_uca1400_ai_ci;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Volcado de datos para la tabla `django_session`
 --
 
 INSERT INTO `django_session` (`session_key`, `session_data`, `expire_date`) VALUES
-('0t25pkb1gnjvvzb08mh4f4oka91dk5lw', '.eJxVjMsOwiAQRf-FtSEUlIdL9_0GMswMUjWQlHZl_HfbpAvd3nPOfYsI61Li2nmOE4mr0OL0uyXAJ9cd0APqvUlsdZmnJHdFHrTLsRG_bof7d1Cgl6124AgB_JAvjDY7SJYweKOyBe1V4I2fB5WMVjYYjR4JiBNpDj6xVuLzBQ5HOO0:1uVNPW:HurDDb3Vpqv_xl1WpO7meW7P1vedf3q-73IWQc7L6tQ', '2025-07-12 04:43:30.123823');
+('4o7vrcmrlb5w7qgdyg66ecmdkbaafxcu', '.eJxVjDsOwyAQRO9CHSGD-W3K9D4DWhYITiKQjF1FuXtsyUVSjTTvzbyZx20tfutp8XNkVybY5bcLSM9UDxAfWO-NU6vrMgd-KPyknU8tptftdP8OCvayr0lLiYKMUFlTIEtWxT1GCTkMNumcjXbOwihDkoEUOMw0DmAACEBp9vkC8ek38w:1uXfTe:QBZ4IvKPRMpJW1ef11Nb9bT_P8UxY-66zTCbn77BhAA', '2025-07-18 12:25:14.196103');
 
 -- --------------------------------------------------------
 
@@ -416,20 +439,20 @@ INSERT INTO `django_session` (`session_key`, `session_data`, `expire_date`) VALU
 
 DROP TABLE IF EXISTS `parametros`;
 CREATE TABLE IF NOT EXISTS `parametros` (
-  `idtipo` int(11) NOT NULL,
+  `idtipo` int NOT NULL,
   `numeracion` varchar(15) NOT NULL,
   `serie` varchar(3) NOT NULL,
   PRIMARY KEY (`idtipo`),
   UNIQUE KEY `numeracion` (`numeracion`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_uca1400_ai_ci;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Volcado de datos para la tabla `parametros`
 --
 
 INSERT INTO `parametros` (`idtipo`, `numeracion`, `serie`) VALUES
-(1, '00010', '001'),
-(2, '01000', '002');
+(1, '00011', '001'),
+(2, '01004', '002');
 
 -- --------------------------------------------------------
 
@@ -439,18 +462,18 @@ INSERT INTO `parametros` (`idtipo`, `numeracion`, `serie`) VALUES
 
 DROP TABLE IF EXISTS `productos`;
 CREATE TABLE IF NOT EXISTS `productos` (
-  `idproducto` int(11) NOT NULL AUTO_INCREMENT,
+  `idproducto` int NOT NULL AUTO_INCREMENT,
   `descripcion` varchar(40) NOT NULL,
   `precio` decimal(10,2) NOT NULL,
-  `stock` int(11) NOT NULL,
+  `stock` int NOT NULL,
   `estado` tinyint(1) NOT NULL,
-  `idcategoria` int(11) NOT NULL,
-  `idunidad` int(11) NOT NULL,
+  `idcategoria` int NOT NULL,
+  `idunidad` int NOT NULL,
   PRIMARY KEY (`idproducto`),
   UNIQUE KEY `descripcion` (`descripcion`),
-  KEY `productos_idcategoria_9954577c_fk_categorias_idcategoria` (`idcategoria`),
-  KEY `productos_idunidad_fb62c9e9_fk_unidades_idunidad` (`idunidad`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_uca1400_ai_ci;
+  KEY `productos_idcategoria_9954577c` (`idcategoria`),
+  KEY `productos_idunidad_fb62c9e9` (`idunidad`)
+) ENGINE=MyISAM AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Volcado de datos para la tabla `productos`
@@ -458,9 +481,10 @@ CREATE TABLE IF NOT EXISTS `productos` (
 
 INSERT INTO `productos` (`idproducto`, `descripcion`, `precio`, `stock`, `estado`, `idcategoria`, `idunidad`) VALUES
 (1, 'Laptop XYZ', 1200.00, 50, 1, 1, 1),
-(2, 'Arroz Costeño 5kg', 15.50, 200, 1, 2, 2),
-(3, 'Gaseosa Coca Cola 1L', 5.00, 300, 1, 3, 3),
-(4, 'Camisa de algodón', 45.90, 100, 1, 4, 1);
+(2, 'Arroz Costeño 5kg', 15.50, 198, 1, 2, 2),
+(3, 'Gaseosa Coca Cola 1L', 5.00, 296, 1, 3, 3),
+(4, 'Camisa de algodón', 45.90, 99, 1, 4, 1),
+(5, 'Galleta Nik', 1.50, 48, 1, 2, 1);
 
 -- --------------------------------------------------------
 
@@ -470,12 +494,12 @@ INSERT INTO `productos` (`idproducto`, `descripcion`, `precio`, `stock`, `estado
 
 DROP TABLE IF EXISTS `tipos`;
 CREATE TABLE IF NOT EXISTS `tipos` (
-  `idtipo` int(11) NOT NULL AUTO_INCREMENT,
+  `idtipo` int NOT NULL AUTO_INCREMENT,
   `descripcion` varchar(20) NOT NULL,
   `estado` tinyint(1) NOT NULL,
   PRIMARY KEY (`idtipo`),
   UNIQUE KEY `descripcion` (`descripcion`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_uca1400_ai_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Volcado de datos para la tabla `tipos`
@@ -493,12 +517,12 @@ INSERT INTO `tipos` (`idtipo`, `descripcion`, `estado`) VALUES
 
 DROP TABLE IF EXISTS `unidades`;
 CREATE TABLE IF NOT EXISTS `unidades` (
-  `idunidad` int(11) NOT NULL AUTO_INCREMENT,
+  `idunidad` int NOT NULL AUTO_INCREMENT,
   `descripcion` varchar(30) NOT NULL,
   `estado` tinyint(1) NOT NULL,
   PRIMARY KEY (`idunidad`),
   UNIQUE KEY `descripcion` (`descripcion`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_uca1400_ai_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Volcado de datos para la tabla `unidades`
@@ -509,71 +533,6 @@ INSERT INTO `unidades` (`idunidad`, `descripcion`, `estado`) VALUES
 (2, 'Kilogramo', 1),
 (3, 'Litro', 1),
 (4, 'Caja', 1);
-
---
--- Restricciones para tablas volcadas
---
-
---
--- Filtros para la tabla `auth_group_permissions`
---
-ALTER TABLE `auth_group_permissions`
-  ADD CONSTRAINT `auth_group_permissio_permission_id_84c5c92e_fk_auth_perm` FOREIGN KEY (`permission_id`) REFERENCES `auth_permission` (`id`),
-  ADD CONSTRAINT `auth_group_permissions_group_id_b120cbf9_fk_auth_group_id` FOREIGN KEY (`group_id`) REFERENCES `auth_group` (`id`);
-
---
--- Filtros para la tabla `auth_permission`
---
-ALTER TABLE `auth_permission`
-  ADD CONSTRAINT `auth_permission_content_type_id_2f476e4b_fk_django_co` FOREIGN KEY (`content_type_id`) REFERENCES `django_content_type` (`id`);
-
---
--- Filtros para la tabla `auth_user_groups`
---
-ALTER TABLE `auth_user_groups`
-  ADD CONSTRAINT `auth_user_groups_group_id_97559544_fk_auth_group_id` FOREIGN KEY (`group_id`) REFERENCES `auth_group` (`id`),
-  ADD CONSTRAINT `auth_user_groups_user_id_6a12ed8b_fk_auth_user_id` FOREIGN KEY (`user_id`) REFERENCES `auth_user` (`id`);
-
---
--- Filtros para la tabla `auth_user_user_permissions`
---
-ALTER TABLE `auth_user_user_permissions`
-  ADD CONSTRAINT `auth_user_user_permi_permission_id_1fbb5f2c_fk_auth_perm` FOREIGN KEY (`permission_id`) REFERENCES `auth_permission` (`id`),
-  ADD CONSTRAINT `auth_user_user_permissions_user_id_a95ead1b_fk_auth_user_id` FOREIGN KEY (`user_id`) REFERENCES `auth_user` (`id`);
-
---
--- Filtros para la tabla `cabeceraventas`
---
-ALTER TABLE `cabeceraventas`
-  ADD CONSTRAINT `cabeceraventas_idcliente_99e367c5_fk_clientes_idcliente` FOREIGN KEY (`idcliente`) REFERENCES `clientes` (`idcliente`),
-  ADD CONSTRAINT `cabeceraventas_idtipo_5e390c8b_fk_tipos_idtipo` FOREIGN KEY (`idtipo`) REFERENCES `tipos` (`idtipo`);
-
---
--- Filtros para la tabla `detalleventas`
---
-ALTER TABLE `detalleventas`
-  ADD CONSTRAINT `detalleventas_idproducto_4664e227_fk_productos_idproducto` FOREIGN KEY (`idproducto`) REFERENCES `productos` (`idproducto`),
-  ADD CONSTRAINT `detalleventas_idventa_058d84b5_fk_cabeceraventas_idventa` FOREIGN KEY (`idventa`) REFERENCES `cabeceraventas` (`idventa`);
-
---
--- Filtros para la tabla `django_admin_log`
---
-ALTER TABLE `django_admin_log`
-  ADD CONSTRAINT `django_admin_log_content_type_id_c4bce8eb_fk_django_co` FOREIGN KEY (`content_type_id`) REFERENCES `django_content_type` (`id`),
-  ADD CONSTRAINT `django_admin_log_user_id_c564eba6_fk_auth_user_id` FOREIGN KEY (`user_id`) REFERENCES `auth_user` (`id`);
-
---
--- Filtros para la tabla `parametros`
---
-ALTER TABLE `parametros`
-  ADD CONSTRAINT `parametros_idtipo_7b9cb587_fk_tipos_idtipo` FOREIGN KEY (`idtipo`) REFERENCES `tipos` (`idtipo`);
-
---
--- Filtros para la tabla `productos`
---
-ALTER TABLE `productos`
-  ADD CONSTRAINT `productos_idcategoria_9954577c_fk_categorias_idcategoria` FOREIGN KEY (`idcategoria`) REFERENCES `categorias` (`idcategoria`),
-  ADD CONSTRAINT `productos_idunidad_fb62c9e9_fk_unidades_idunidad` FOREIGN KEY (`idunidad`) REFERENCES `unidades` (`idunidad`);
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

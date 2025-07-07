@@ -18,4 +18,3 @@ def actualizarStock(idproducto, cantidadquitada):
     )
     return updated
 
-    
